@@ -1,0 +1,397 @@
+﻿#include <iostream>
+using namespace std;
+
+void QuickSort(int arr[], int low, int high)
+{
+        if (low > high)
+        {
+                return;
+        }
+
+        int pivot = arr[low];
+        int i = low + 1;
+        int j = high;
+
+        while (i <= j)
+        {
+                if (i <= high && arr[i] <= pivot)
+                {
+                        i++;
+                }
+                if (arr[j] > pivot)
+                {
+                        j--;
+                }
+                if (i < j)
+                {
+                        swap(arr[i], arr[j]);
+                }
+        }
+
+        swap(arr[low], arr[j]);
+        QuickSort(arr, low, j - 1);
+        QuickSort(arr, j + 1, high);
+}
+
+void print(int arr[], int n)
+{
+        for (int i = 0; i < n; i++)
+        {
+                cout << arr[i] << "        ";
+        }
+}
+int main()
+{
+        int arr[] = {1, 2, 6, 1, 5, -9, 5, 12, 45, -6};
+        int n = sizeof(arr) / sizeof(int);
+        print(arr, n);
+        cout << "\n";
+        QuickSort(arr, 0, n - 1);
+        print(arr, n);
+        return 0;
+}
+
+
+//BFS
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+void BFS(int start , const vector<vector<int> > &adj, vector<bool>&visited){
+
+queue<int> q;
+q.push(start);
+
+visited[start] = true;
+int node;
+while(!q.empty()){
+        node = q.front();
+        q.pop();
+        cout << node << "\t";
+
+for(int neighbor: adj[node]){
+                if(!visited[neighbor]){
+                        q.push(neighbor);
+                        visited[neighbor] = true;
+                }
+}
+}
+}
+
+int main(){
+        int n =5;
+        vector<vector<int> > adj(n);
+        // adj[0] = {1, 2};    // Node 0 connects to 1 and 2
+adj[0].push_back(1);
+adj[0].push_back(2);
+adj[1].push_back(0);
+adj[1].push_back(3);
+adj[2].push_back(0);
+adj[2].push_back(4);
+adj[3].push_back(1);
+adj[4].push_back(2);
+
+        vector<bool> visited(n,false);
+        BFS(0,adj,visited);
+        return 0;
+}
+
+//Pg5
+#include <iostream>
+using namespace std;
+
+void heapify(int arr[], int n , int i){
+        int largest = i;
+        int left = 2*i + 1;
+        int right = 2* + 2;
+
+        if(left < n && arr[left] > arr[largest]){largest = left;}
+
+          if(right < n && arr[right] > arr[largest]){largest = right;}
+
+          if(largest!= i){
+                swap(arr[i], arr[largest]);
+                heapify(arr, n, largest);
+          }
+}
+
+void heapsort(int arr[], int n){
+        for(int i = n/2 - 1; i>=0;i--){
+                heapify(arr,n,i);
+        }
+
+        for(int i = n-1; i>=0;i--){
+                swap(arr[i], arr[0]);
+                heapify(arr,i,0);
+        }
+
+
+}
+
+
+void print(int arr[], int n){
+        for(int i = 0; i<n;i++){
+                cout << arr[i] << "\t";
+        }
+        cout << endl;
+}
+
+int main(){
+ int arr[] = {1,2,5,2,5,8,-9,7,34};
+ int n = sizeof(arr)/sizeof(int);
+print(arr,n);
+ heapsort(arr,n);
+print(arr,n);
+        return 0;
+}
+
+//Horspool
+#include <iostream>
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+unordered_map<char, int> buildShift(const string& pat) {
+        int m = pat.size();
+        unordered_map<char, int> shift;
+        for (int c = 0; c < 128; c++) shift[(char)c] = m;
+        for (int i = 0; i < m - 1; i++) shift[pat[i]] = m - 1 - i;
+        return shift;
+}
+
+int search(const string& txt, const string& pat) {
+        int n = txt.size(), m = pat.size();
+        if (m == 0) return 0;
+        if (m > n) return -1;
+
+        auto shift = buildShift(pat);
+        int i = m - 1;
+
+        while (i < n) {
+                int k = 0;
+                while (k < m && pat[m - 1 - k] == txt[i - k]) k++;
+                if (k == m) return i - m + 1;
+                i += shift[txt[i]];
+        }
+        return -1;
+}
+
+int main() {
+        string text = "text";
+        string pattern = "t";
+
+        int pos = search(text, pattern);
+        cout << (pos != -1 ? "Found at: " + to_string(pos) : "Not found") << endl;
+        return 0;
+}
+
+
+//Floyd Warshall
+//Floyd-Warshall
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main(){
+const int INF = 1e9;
+int n = 4;
+int dist[4][4];
+int i,j;
+//initialise all the elements in the matrix 
+for(i = 0; i < n;i++){
+        for(j =0;j<n;j++){
+                if(i==j){
+                        dist[i][j] = 0;
+                }
+                else{
+                        dist[i][j] = INF;
+                }
+        }
+}
+
+dist[0][1] = 8;
+dist[0][3] = 1;
+dist[1][2] = 1;
+dist[2][1] = 4;
+dist[3][1] = 2;
+dist[3][3] = 9;
+
+for(int k = 0; k < n ; k++){
+        for(i = 0; i < n;i++){
+                for(j =0;j<n;j++){
+                if(dist[i][k] && dist[k][j] != INF){
+                        if(dist[i][j]> dist[i][k]+dist[k][j]){
+
+                                dist[i][j]= dist[i][k]+dist[k][j];
+                        }
+                }
+        }
+}
+}
+
+//PRINT THE CHOICES 
+for(i = 0; i < n;i++){
+        for(j =0;j<n;j++){
+                if(dist[i][j] == INF){
+                      cout << "-\t";
+                }
+                else{
+                      cout<< dist[i][j]<< "\t";
+                }
+        }
+        cout<<"\n";
+}
+return 0;
+}
+
+//Dijkstra’s 
+#include <iostream>
+#include <vector>
+#define INF 9999
+#define V 5
+
+using namespace std;
+
+int minDistance(vector<int>& dist, vector<bool>& visited) {
+        int min = INF, min_index;
+
+        for (int v = 0; v < V; v++)
+                if (!visited[v] && dist[v] <= min)
+                        min = dist[v], min_index = v;
+
+        return min_index;
+}
+
+void dijkstra(int graph[V][V], int src) {
+        vector<int> dist(V, INF);
+        vector<bool> visited(V, false);
+
+        dist[src] = 0;
+
+        for (int count = 0; count < V - 1; count++) {
+                int u = minDistance(dist, visited);
+                visited[u] = true;
+
+                for (int v = 0; v < V; v++){
+                        if (!visited[v] && graph[u][v] && dist[u] != INF
+                                && dist[u] + graph[u][v] < dist[v])
+                                dist[v] = dist[u] + graph[u][v];}
+        }
+
+        cout << "Vertex \t Distance from Source\n";
+        for (int i = 0; i < V; i++)
+                cout << i << " \t\t " << dist[i] << endl;
+}
+
+int main() {
+        int graph[V][V] = {
+                {0, 6, 0, 1, 0},
+                {6, 0, 5, 2, 2},
+                {0, 5, 0, 0, 5},
+                {1, 2, 0, 0, 1},
+                {0, 2, 5, 1, 0}
+        };
+
+        dijkstra(graph, 0);
+        return 0;
+}
+
+//Subset
+//Subset of the sum problem 
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void SubSet(vector<int>&s,vector<int>&path,int k,int CurrentSum, int d){
+//Base case
+if(CurrentSum == d){
+        cout << "{" ;
+        for(int num: path){
+                cout<<num<<" ";
+        }
+        cout << "}"<<endl ;
+        return;
+}
+//overflow k >= s.size() || CS > d
+if(k >= s.size()|| CurrentSum>d){
+        return;
+}
+
+path.push_back(s[k]);
+SubSet(s,path,k+1,CurrentSum+s[k],d);
+
+path.pop_back();
+SubSet(s,path,k+1,CurrentSum,d);
+}
+
+int main(){
+        vector<int> s;
+// s.push_back(3);
+s.push_back(4);
+s.push_back(5);
+s.push_back(2);
+
+        int d = 7;
+        vector<int> path;
+
+        cout << "Subsets with sum " << d << ":\n";
+        SubSet(s, path, 0, 0, d);
+
+        return 0;
+}
+
+//Assignment
+#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+
+int N = 4;
+int CostMatrix[4][4] = {
+        {9, 2, 7, 8},
+        {6, 4, 3, 7},
+        {5, 8, 1, 8},
+        {7, 6, 9, 4}};
+
+bool Assigned[4];
+int MinCost = INT_MAX;
+int BestAssignment[4];
+int CurrentAssignment[4];
+
+void Assign(int worker , int CurrentCost){
+        if(worker == N){
+                MinCost = min(MinCost,CurrentCost);
+                for(int i = 0;i<N;i++){
+                        BestAssignment[i] = CurrentAssignment[i];
+                }
+                return;
+        }
+
+        for(int j = 0; j<N;j++){
+                if(!Assigned[j]){
+                        Assigned[j] = true;
+                        CurrentAssignment[worker] = j;
+                        if(CurrentCost + CostMatrix[worker][j] < MinCost){
+                                Assign(worker+1,CurrentCost + CostMatrix[worker][j] );
+
+
+                        }
+                        Assigned[j] = false;
+                }
+        }
+        
+        
+}
+
+
+int main(){
+        fill(Assigned,Assigned+N,false);
+        Assign(0,0);
+        for (int i = 0; i < N; i++) {
+                cout << "Worker " << i << " -> Job " << BestAssignment[i] << " (Cost: " << CostMatrix[i][BestAssignment[i]] << ")\n";
+        }
+        cout << "Shortest Distance is : " <<      MinCost ;
+        return 0;
+}
+
